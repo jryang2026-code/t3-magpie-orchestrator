@@ -1,0 +1,63 @@
+{
+  "version": 3,
+  "worker_group": "flash-worker",
+  "antigravity_cache_path": "~/.t3/caches/antigravity.json",
+  "low_quota_threshold_percent": 30,
+  "pr_reviewer_mode": "hybrid",
+  "auto_merge_on_clean_p2": false,
+  "harnesses": [
+    {
+      "t3_instance": "claudeAgent",
+      "label": "Primary Orchestrator (Claude Code)",
+      "model": "claude-opus-5-5",
+      "default_effort": "medium",
+      "option_spec": "effort=medium",
+      "magpie_provider": "claude",
+      "strengths": "Architecture planning, task decomposition, complex frontend/UI/UX, PR review triage, and final closeout.",
+      "avoid": "Bulk mechanical edits, full-repo grepping, or repetitive boilerplate."
+    },
+    {
+      "t3_instance": "antigravity",
+      "label": "P0 Plan Reviewer / Frontend Copilot (Optional)",
+      "model": "gemini-4-neon",
+      "default_effort": "medium",
+      "option_spec": "thought_level=medium",
+      "quota_source": "antigravity:gemini-weekly",
+      "strengths": "Second-pass critique on high-risk or cross-module P0 plans, plus complex interactive frontend work.",
+      "avoid": "Adding an extra review round on small/clear tasks; throttle when Antigravity weekly remaining is below 30%."
+    },
+    {
+      "t3_instance": "codex",
+      "label": "Backend & Pre-Review Specialist",
+      "model": "gpt-6.2-sol",
+      "default_effort": "medium",
+      "option_spec": "reasoningEffort=medium",
+      "magpie_provider": "codex",
+      "strengths": "Complex backend logic, concurrency/state-machine debugging, high-risk diff pre-review, and fallback local PR review.",
+      "avoid": "Trivial edits or redundant reviews on small non-risk PRs already covered by CI + GitHub Auto-Review."
+    },
+    {
+      "t3_instance": "pi",
+      "label": "Primary Flash Worker",
+      "model": "magpie/group/flash-worker",
+      "default_effort": "max",
+      "option_spec": "thinking=max",
+      "magpie_group": "flash-worker",
+      "strengths": "Read-only codebase exploration, scoped implementation slices, unit tests, git commit/push/PR creation, and P1 review fixes.",
+      "avoid": "Polling PR status in sleep loops (use T3 native watch_pull_request instead); escalate after 2 failed review-fix rounds."
+    },
+    {
+      "t3_instance": "opencode",
+      "label": "Secondary Parallel Flash Worker",
+      "model": "magpie/group/flash-worker",
+      "default_effort": "max",
+      "option_spec": "variant=max",
+      "magpie_group": "flash-worker",
+      "strengths": "Parallel worker lane alongside Pi for independent modules, cross-checks, tests, and PR operations.",
+      "avoid": "Same as Pi: no polling loops, escalate past 2 failed fix rounds."
+    }
+  ],
+  "retired_harnesses": [
+    "omp"
+  ]
+}
