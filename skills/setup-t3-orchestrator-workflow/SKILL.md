@@ -58,7 +58,7 @@ Ask the user to confirm (prefer native choice cards when available, with sensibl
    - **Backend & Pre-Review Specialist**: e.g. `codex` (`codex/gpt-6.2-sol`, `reasoningEffort=medium`) or fallback reasoning model.
    - **Flash Workers**: `pi` and/or `opencode` bound to `magpie/group/flash-worker` (or custom group name), retiring redundant legacy harnesses like `omp` if desired.
 2. **Account-pool safety hygiene** (for multi-account Magpie setups):
-   - Recommend switching staggered multi-account `claude`/`codex` providers from restrictive pacing to `routing=smart`, enabling `pool --careful on`, `claudeNoExtraUsage on`, and Codex `quota credits off` (or `last`), plus `magpie visible <agent> <provider>` isolation.
+   - Recommend switching staggered multi-account `claude`/`codex` providers from restrictive pacing to `magpie provider set <id> routing=smart`, enabling `magpie provider pool <id> --careful on`, `magpie settings set claudeNoExtraUsage on`, and Codex `magpie quota credits off` (or `last`), plus `magpie visible <agent> <provider>` isolation.
 3. **PR & Review workflow policy**:
    - `pr_reviewer_mode`: `"hybrid"` (GitHub Codex Auto-Review + local `codex` pre-review on high-risk diffs + local `codex review` fallback when bot absent/timeout), `"local_codex"`, or `"ci_only"`.
    - `auto_merge_on_clean_p2`: `false` (stop at Ready-to-Merge for user click) vs `true` (worker runs `gh pr merge --squash --delete-branch` once CI is green and tracking Issues are filed for substantive P2s).
